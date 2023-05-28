@@ -1,6 +1,7 @@
 # Modifiedchat
 
 一个可以修改聊天格式的一个Minecraft Server插件，以及适配于Folia
+
 如果你喜欢简约点的，就用这款插件吧！
 
 -----------
