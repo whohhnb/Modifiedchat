@@ -12,6 +12,7 @@
 在 {DISPLAY_NAME} 和 {MESSAGE} 变量中，{DISPLAY_NAME} 代表玩家的显示名称，{MESSAGE} 代表玩家发送的消息。这些变量的值将在触发 AsyncPlayerChatEvent 事件时由插件自动填充。
 
 ![image](https://github.com/whohhnb/Modifiedchat/assets/108384401/a18b4e6f-035e-4236-81d2-24090c061dda)
+
 ![image](https://github.com/whohhnb/Modifiedchat/assets/108384401/cd835d91-8ab2-4702-89eb-fb6dbcd49343)
 
 后续会支持 PlaceholderAPI（有空吧）
@@ -43,6 +44,7 @@
 效果如下：
 
 ![image](https://github.com/whohhnb/Modifiedchat/assets/108384401/02393ff1-849d-455c-b976-80a69384a9e4)
+
 ![image](https://github.com/whohhnb/Modifiedchat/assets/108384401/a6e508ea-c111-43dd-9923-a67d751aec1f)
 
 -----------
