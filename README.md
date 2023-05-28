@@ -14,17 +14,23 @@
 后续会支持 PlaceholderAPI（有空吧）
 # 使用
 在游戏中可以使用 /modifiedtell 来私聊玩家
+
 用法为：/modifiedtell [玩家] [信息]
+
 例：/modifiedtell whohh_ awa
 
 又或者是
+
 /modifiedwhisper whohh_ awa
 
 当然也可以简化指令：
+
 /mt [玩家] [信息]
+
 例：/mt whohh_ awa
 
 重载指令为：
+
 /mtreload
 
 效果如下：
