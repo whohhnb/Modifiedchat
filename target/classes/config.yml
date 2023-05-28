@@ -1,0 +1,7 @@
+# ModifiedChat 插件配置
+# 请注意：更改配置文件后，需要重启服务器才能使更改生效。
+
+# 聊天消息格式
+# 以下变量将被替换: {DISPLAY_NAME}, {MESSAGE}
+# 默认值: "&7[&f{DISPLAY_NAME}&7] &f{MESSAGE}"
+chat-format: "&7{DISPLAY_NAME} &f> &7{MESSAGE}"
