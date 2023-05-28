@@ -2,7 +2,7 @@
 
 一个可以修改聊天格式的一个Minecraft Server插件，以及适配于Folia
 
-支持1.8-1.19+
+插件需要前置Vault！！！！！支持1.8-1.19+
 
 如果你喜欢简约点的，就用这款插件吧！
 
@@ -49,6 +49,7 @@
 ![image](https://github.com/whohhnb/Modifiedchat/assets/108384401/02393ff1-849d-455c-b976-80a69384a9e4)
 
 ![image](https://github.com/whohhnb/Modifiedchat/assets/108384401/a6e508ea-c111-43dd-9923-a67d751aec1f)
+
 
 -----------
 不妨给我点个Star？谢谢谢谢好人一生平安！
