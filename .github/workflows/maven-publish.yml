@@ -2,7 +2,7 @@
 # 并创建GitHub Release（预发布版本）及发布包到GitHub Packages
 # 关于Maven的更多信息：https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
 
-name: 自动构建与发布
+name: 自动构建
 
 on:
   push:
