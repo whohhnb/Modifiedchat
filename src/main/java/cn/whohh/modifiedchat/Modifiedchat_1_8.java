@@ -1,5 +1,7 @@
 package cn.whohh.modifiedchat;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -25,11 +27,21 @@ public class Modifiedchat_1_8 implements Listener {
                 .replace("{DISPLAY_NAME}", playerName)
                 .replace("{MESSAGE}", message);
 
-        event.setFormat(ChatColor.translateAlternateColorCodes('&', message));
-
-        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+        if (((Modifiedchat) plugin).isUseMiniMessage()) {
+            // 使用 MiniMessage 格式化
+            MiniMessage miniMessage = ((Modifiedchat) plugin).getMiniMessage();
+            Component component = miniMessage.deserialize(formattedMessage);
+            event.setFormat("");
+            // 为所有在线玩家发送消息
+            for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                player.sendMessage(component);
+            }
+        } else {
+            // 使用传统的 ChatColor 格式
+            event.setFormat(ChatColor.translateAlternateColorCodes('&', formattedMessage));
+            for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+            }
         }
     }
-
 }

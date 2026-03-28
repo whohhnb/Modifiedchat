@@ -1,7 +1,28 @@
 # ModifiedChat 插件配置
-# 请注意：更改配置文件后，需要重启服务器才能使更改生效。
+# 请注意：更改配置文件后，需要重启服务器或执行 /mtreload 重新加载配置
 
 # 聊天消息格式
 # 以下变量将被替换: {DISPLAY_NAME}, {MESSAGE}
 # 默认值: "&7[&f{DISPLAY_NAME}&7] &f{MESSAGE}"
-chat-format: "&7{DISPLAY_NAME} &f> &7{MESSAGE}"
+# 
+# 使用 MiniMessage 格式时，可以使用以下标签:
+# <color:#RRGGBB> - RGB 颜色
+# <color:red> - 命名颜色
+# <bold> - 粗体
+# <italic> - 斜体
+# <underlined> - 下划线
+# <strikethrough> - 删除线
+# <obfuscated> - 混淆文本
+# <click:action:value> - 点击事件
+# <hover:show_text:'<color:red>文本'> - 悬停事件
+#
+# 示例:
+# chat-format: "<color:#00FF00>[<color:#FFFF00>{DISPLAY_NAME}<color:#00FF00>] <color:white>{MESSAGE}"
+# chat-format: "&7[&f{DISPLAY_NAME}&7] &f{MESSAGE}"  # 使用传统的 & 代码
+
+chat-format: "&7[&f{DISPLAY_NAME}&7] &f{MESSAGE}"
+
+# 是否使用 MiniMessage 格式（更高级的文本格式化）
+# 设置为 true 启用 MiniMessage，false 使用传统的 ChatColor 格式
+# 默认值: true
+use-minimessage: true

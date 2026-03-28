@@ -1,5 +1,7 @@
 package cn.whohh.modifiedchat;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -13,6 +15,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Modifiedchat extends JavaPlugin implements Listener {
 
     private String chatFormat;
+    private boolean useMiniMessage;
+    private MiniMessage miniMessage;
 
     @Override
     public void onEnable() {
@@ -58,8 +62,19 @@ public class Modifiedchat extends JavaPlugin implements Listener {
             String formattedMessage = chatFormat
                     .replace("{DISPLAY_NAME}", sender instanceof Player ? ((Player) sender).getDisplayName() : sender.getName())
                     .replace("{MESSAGE}", message);
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[私聊] &f你对 " + target.getDisplayName() + " 说: " + message));
-            target.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[私聊] " + sender.getName() + " 对你说: " + message));
+            
+            if (useMiniMessage) {
+                Component component = miniMessage.deserialize(formattedMessage);
+                if (sender instanceof Player) {
+                    ((Player) sender).sendMessage(component);
+                } else {
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[私聊] &f你对 " + target.getDisplayName() + " 说: " + message));
+                }
+                target.sendMessage(component);
+            } else {
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[私聊] &f你对 " + target.getDisplayName() + " 说: " + message));
+                target.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[私聊] " + sender.getName() + " 对你说: " + message));
+            }
             return true;
         }
         if (cmd.getName().equalsIgnoreCase("mtreload")) {
@@ -78,6 +93,17 @@ public class Modifiedchat extends JavaPlugin implements Listener {
         if (chatFormat == null) {
             chatFormat = "&7[&f{DISPLAY_NAME}&7] &f{MESSAGE}";
         }
+        
+        useMiniMessage = getConfig().getBoolean("use-minimessage", true);
+        if (miniMessage == null) {
+            miniMessage = MiniMessage.miniMessage();
+        }
+        
+        if (useMiniMessage) {
+            getLogger().info("MiniMessage 已启用!");
+        } else {
+            getLogger().info("使用传统的 ChatColor 格式");
+        }
     }
 
     @EventHandler
@@ -87,7 +113,19 @@ public class Modifiedchat extends JavaPlugin implements Listener {
         String formattedMessage = chatFormat
                 .replace("{DISPLAY_NAME}", playerName)
                 .replace("{MESSAGE}", message);
-        event.setFormat(ChatColor.translateAlternateColorCodes('&', formattedMessage));
+        
+        if (useMiniMessage) {
+            // 使用 MiniMessage 格式化
+            Component component = miniMessage.deserialize(formattedMessage);
+            event.setFormat("");
+            // 为所有在线玩家发送消息
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                player.sendMessage(component);
+            }
+        } else {
+            // 使用传统的 ChatColor 格式
+            event.setFormat(ChatColor.translateAlternateColorCodes('&', formattedMessage));
+        }
     }
 
     public String getChatFormat() {
@@ -96,5 +134,17 @@ public class Modifiedchat extends JavaPlugin implements Listener {
 
     public void setChatFormat(String chatFormat) {
         this.chatFormat = chatFormat;
+    }
+
+    public boolean isUseMiniMessage() {
+        return useMiniMessage;
+    }
+
+    public void setUseMiniMessage(boolean useMiniMessage) {
+        this.useMiniMessage = useMiniMessage;
+    }
+
+    public MiniMessage getMiniMessage() {
+        return miniMessage;
     }
 }
