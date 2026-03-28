@@ -1,7 +1,54 @@
 # ModifiedChat 插件配置
-# 请注意：更改配置文件后，需要重启服务器才能使更改生效。
+# 请注意：更改配置文件后，需要重启服务器或执行 /mtreload 重新加载配置
 
 # 聊天消息格式
 # 以下变量将被替换: {DISPLAY_NAME}, {MESSAGE}
-# 默认值: "&7[&f{DISPLAY_NAME}&7] &f{MESSAGE}"
-chat-format: "&7{DISPLAY_NAME} &f> &7{MESSAGE}"
+# {DISPLAY_NAME} - 玩家的显示名（不包含前缀）
+# {MESSAGE} - 玩家发送的消息
+# 
+# 支持 PlaceholderAPI 占位符（如已安装PlaceholderAPI插件）:
+# %player_name% - 玩家名称
+# %player_level% - 玩家等级（需要对应插件支持）
+# %vault_money% - 玩家金钱（需要Vault+经济插件）
+# %playtimeminus_days% - 玩家游玩天数（需要PlayTime插件）
+# ...等等众多其他占位符，具体取决于安装的插件
+#
+# === 传统格式示例（& 符号）===
+# &c - 红色    &a - 绿色    &b - 天蓝色    &e - 黄色
+# &9 - 蓝色    &d - 紫红色  &f - 白色      &7 - 灰色
+# &0 - 黑色    &k - 混淆    &l - 粗体      &m - 删除线
+# &n - 下划线  &o - 斜体    &r - 重置格式
+# 示例: "&7[&f{DISPLAY_NAME}&7] &f{MESSAGE}"
+#
+# === 原版 § 符号示例 ===
+# §c - 红色    §a - 绿色    §b - 天蓝色    §e - 黄色
+# §9 - 蓝色    §d - 紫红色  §f - 白色      §7 - 灰色
+# §0 - 黑色    §k - 混淆    §l - 粗体      §m - 删除线
+# §n - 下划线  §o - 斜体    §r - 重置格式
+# 示例: "§7[§f{DISPLAY_NAME}§7] §f{MESSAGE}"
+#
+# === MiniMessage 格式示例（需启用 use-minimessage: true）===
+# <color:#RRGGBB>  - RGB 颜色
+# <color:red>      - 命名颜色
+# <bold>           - 粗体
+# <italic>         - 斜体
+# <underlined>     - 下划线
+# <strikethrough>  - 删除线
+# <obfuscated>     - 混淆文本
+# <hover:show_text:'<color:red>文本'> - 悬停事件
+# <click:open_url:'链接'> - 链接点击
+# 示例: "<color:#00FF00>[<color:#FFFF00>{DISPLAY_NAME}<color:#00FF00>] <color:white>{MESSAGE}"
+
+# 默认聊天格式
+# 重要提示：
+# - 使用传统格式时（use-minimessage: false），支持 &7 等颜色代码
+# - 使用 MiniMessage 时（use-minimessage: true），需要使用 <color:red> 等标签，不支持 & 和 § 符号
+chat-format: "&7[&f{DISPLAY_NAME}&7] &f{MESSAGE}"
+
+# 是否使用 MiniMessage 格式
+# true  - 启用 MiniMessage（RGB颜色、样式效果等）
+#         示例: "<color:#00FF00>[<color:#FFFF00>{DISPLAY_NAME}<color:#00FF00>] <color:white>{MESSAGE}"
+# false - 使用传统格式（& 和 § 符号）
+#         示例: "&7[&f{DISPLAY_NAME}&7] &f{MESSAGE}"
+# 默认值: false
+use-minimessage: false
