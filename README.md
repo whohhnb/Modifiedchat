@@ -9,8 +9,6 @@
 
 一个功能强大、轻量级的Minecraft聊天格式修改插件
 
-[简体中文](#features) | [English](./README_EN.md)
-
 </div>
 
 ---
