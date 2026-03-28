@@ -1,7 +1,8 @@
 name: modifiedchat
 version: '${project.version}'
 main: cn.whohh.modifiedchat.Modifiedchat
-api-version: 1.19
+# 支持 1.8 ~ 最新版（API 版本声明不影响兼容性）
+api-version: 1.13
 prefix: modifiedchat
 load: STARTUP
 soft-depend: [PlaceholderAPI]

@@ -24,19 +24,6 @@ public class PluginInitializer {
     }
 
     /**
-     * 检查是否为1.8版本
-     */
-    public boolean isVersion1_8() {
-        try {
-            String version = Bukkit.getVersion().split(" ")[1];
-            return version.startsWith(ChatConstants.VERSION_1_8);
-        } catch (Exception e) {
-            plugin.getLogger().warning("无法检测服务器版本：" + e.getMessage());
-            return false;
-        }
-    }
-
-    /**
      * 初始化MiniMessage实例
      */
     public MiniMessage initMiniMessage() {
@@ -44,10 +31,12 @@ public class PluginInitializer {
     }
 
     /**
-     * 记录启动信息
+     * 记录启动信息和版本兼容性提示
      */
     public void logStartupInfo(boolean minimessageEnabled, boolean placeholderAPIEnabled) {
-        plugin.getLogger().info(ChatConstants.PLUGIN_NAME + " 插件已启动！");
+        String version = getServerVersion();
+        plugin.getLogger().info(ChatConstants.PLUGIN_NAME + " 插件已启动！(版本: " + version + ")");
+        plugin.getLogger().info("支持 Minecraft 1.8 ~ 最新版本");
         if (minimessageEnabled) {
             plugin.getLogger().info("MiniMessage 已启用！");
         } else {
@@ -55,6 +44,22 @@ public class PluginInitializer {
         }
         if (placeholderAPIEnabled) {
             plugin.getLogger().info("PlaceholderAPI 已检测到，占位符支持已启用!");
+        }
+    }
+
+    /**
+     * 获取服务器版本字符串
+     */
+    private String getServerVersion() {
+        try {
+            String fullVersion = Bukkit.getVersion();
+            // 尝试提取版本号 (格式: git-Paper-<hash> (MC: x.xx.x))
+            if (fullVersion.contains("MC: ")) {
+                return fullVersion.substring(fullVersion.indexOf("MC: ") + 4, fullVersion.lastIndexOf(")"));
+            }
+            return fullVersion;
+        } catch (Exception e) {
+            return "Unknown";
         }
     }
 }

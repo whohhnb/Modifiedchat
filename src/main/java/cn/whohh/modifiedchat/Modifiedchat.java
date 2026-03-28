@@ -39,18 +39,13 @@ public class Modifiedchat extends JavaPlugin implements Listener {
         // 检查PlaceholderAPI
         placeholderAPIEnabled = initializer.isPlaceholderAPIEnabled();
 
-        // 为1.8版本注册事件处理器
-        if (initializer.isVersion1_8()) {
-            Bukkit.getPluginManager().registerEvents(new Modifiedchat_1_8(this), this);
-        }
-
         // 加载配置
         loadConfig();
         
-        // 记录启动信息
+        // 记录启动信息（包含版本信息）
         initializer.logStartupInfo(useMiniMessage, placeholderAPIEnabled);
 
-        // 注册事件监听器
+        // 注册单一事件监听器（支持所有版本）
         getServer().getPluginManager().registerEvents(this, this);
     }
 
