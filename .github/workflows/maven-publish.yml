@@ -1,34 +1,115 @@
-# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
-# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
+# 此工作流将在代码推送至主分支时，自动使用Maven构建项目，
+# 并创建GitHub Release（预发布版本）及发布包到GitHub Packages
+# 关于Maven的更多信息：https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
 
-name: Maven Package
+name: 自动构建与发布
 
 on:
-  release:
-    types: [created]
+  push:
+    branches: [ main, master ] # 在推送到主分支时触发
+  # 可选：也可以通过打标签的方式触发正式发布
+  # push:
+  #   tags:
+  #     - 'v*'
 
 jobs:
-  build:
-
+  # 1. 构建、测试并打包
+  build-and-test:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 17
+    - name: 检出代码
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # 获取所有历史用于版本生成
+
+    - name: 设置 JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
-        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-        settings-path: ${{ github.workspace }} # location for the settings.xml file
+        server-id: github
+        settings-path: ${{ github.workspace }}
 
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
+    - name: 缓存 Maven 依赖
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
 
-    - name: Publish to GitHub Packages Apache Maven
-      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
+    - name: 使用 Maven 构建（包含测试）
+      run: mvn -B clean verify --file pom.xml
+
+    - name: 上传构建产物（JAR）
+      uses: actions/upload-artifact@v4
+      with:
+        name: plugin-jar
+        path: target/*.jar
+        retention-days: 5
+
+  # 2. 自动创建 GitHub Release 并发布
+  create-release:
+    runs-on: ubuntu-latest
+    needs: build-and-test # 依赖构建任务
+    if: success() # 仅在构建成功时运行
+    permissions:
+      contents: write # 需要写入权限来创建 Release
+      packages: write
+      id-token: write # 可选，用于更安全的身份验证
+
+    steps:
+    - name: 下载构建产物
+      uses: actions/download-artifact@v4
+      with:
+        name: plugin-jar
+
+    - name: 设置 JDK 17 (用于部署)
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        server-id: github
+        settings-path: ${{ github.workspace }}
+
+    - name: 从 pom.xml 中提取版本号
+      id: extract-version
+      run: |
+        VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed 's/-SNAPSHOT//')
+        echo "version=${VERSION}" >> $GITHUB_OUTPUT
+        echo "Extracted version: ${VERSION}"
+
+    - name: 生成 Release 说明
+      id: generate-changelog
+      # 这是一个简单示例。对于实际项目，建议使用更专业的 changelog 生成器（如 git-cliff）
+      run: |
+        echo "## 自动构建版本 ${{ steps.extract-version.outputs.version }}" > release_notes.md
+        echo "**构建触发提交:** ${{ github.sha }}" >> release_notes.md
+        echo "**构建时间:** $(date -u)" >> release_notes.md
+        echo "" >> release_notes.md
+        echo "此 Release 由推送至 \`${{ github.ref }}\` 的提交自动创建。" >> release_notes.md
+        echo "> 提示：这是预发布版本。正式版本建议通过打 Git 标签 (如 v1.0.0) 触发。" >> release_notes.md
+
+    - name: 创建 GitHub Release (预发布)
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        tag_name: "auto-${{ github.run_number }}-${{ steps.extract-version.outputs.version }}"
+        name: "自动构建 v${{ steps.extract-version.outputs.version }} (构建 #${{ github.run_number }})"
+        body_path: release_notes.md
+        draft: false
+        prerelease: true # 标记为预发布
+        files: |
+          *.jar
+        fail_on_unmatched_files: false
+
+    - name: 使用 Maven 发布到 GitHub Packages
+      # 此步骤将构件（JAR、源码、Javadoc）发布到 GitHub Packages 仓库
+      run: mvn -B deploy -s $GITHUB_WORKSPACE/settings.xml
       env:
         GITHUB_TOKEN: ${{ github.token }}
