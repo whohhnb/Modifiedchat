@@ -124,8 +124,6 @@ chat-format: "<color:#00FF00>[<color:#FFFF00>{DISPLAY_NAME} <color:#00AA00>%vaul
 # 简化命令 1
 /mt <玩家> <信息>
 
-# 简化命令 2
-/ms <玩家> <信息>
 ```
 
 **使用示例**
